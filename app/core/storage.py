@@ -1,30 +1,84 @@
 """
 Módulo de integración con Supabase Storage para almacenamiento multimedia.
-Este archivo encapsula todas las operaciones necesarias con el servicio cloud,
-manteniendo separación clara entre lógica de aplicación y detalles específicos del proveedor.
+Utiliza la librería oficial supabase-py para interactuar con el servicio cloud,
+manejando credenciales de forma segura desde variables de entorno.
 """
 
-# TODO: Implementar cliente real de Supabase Storage aquí
-# Se utilizarán variables de entorno desde config.py para obtener credenciales seguras
+from supabase import create_client, Client
+from app.core.config import settings
+import os
 
 class SupabaseStorageClient:
-    """Cliente abstracto para operaciones de almacenamiento multimedia."""
+    """Cliente para operaciones de almacenamiento multimedia en Supabase Storage."""
     
     def __init__(self):
-        pass
+        """Inicializa el cliente de Supabase usando credenciales del entorno."""
+        if not settings.supabase_url or not settings.supabase_key:
+            raise ValueError("SUPABASE_URL y SUPABASE_KEY deben estar configuradas en .env")
+            
+        self.client: Client = create_client(
+            settings.supabase_url, 
+            settings.supabase_key
+        )
+        self.bucket_name = settings.supabase_bucket
 
-    async def upload_file(self, file_path: str, bucket_name: str, object_name: str):
-        """Cargar archivo al bucket especificado."""
-        raise NotImplementedError("Implementar método de carga.")
+    async def upload_file(self, file_path: str, object_name: str = None) -> dict:
+        """
+        Cargar archivo al bucket especificado.
+        
+        Args:
+            file_path: Ruta local del archivo a cargar
+            object_name: Nombre del objeto en el storage (opcional)
+            
+        Returns:
+            dict: Resultado de la operación de carga
+        """
+        if not object_name:
+            object_name = os.path.basename(file_path)
+            
+        with open(file_path, 'rb') as f:
+            response = self.client.storage.from_(self.bucket_name).upload(
+                file=f,
+                path=object_name,
+                file_options={"content-type": "application/octet-stream"}
+            )
+        return response
 
-    async def download_file(self, bucket_name: str, object_name: str, destination_path: str):
-        """Descargar archivo desde el bucket."""
-        raise NotImplementedError("Implementar método de descarga.")
+    async def download_file(self, object_name: str, destination_path: str) -> bool:
+        """
+        Descargar archivo desde el bucket.
+        
+        Args:
+            object_name: Nombre del objeto en el storage
+            destination_path: Ruta local donde guardar el archivo
+            
+        Returns:
+            bool: True si la descarga fue exitosa
+        """
+        response = self.client.storage.from_(self.bucket_name).download(object_name)
+        with open(destination_path, 'wb') as f:
+            f.write(response)
+        return True
 
-    async def delete_file(self, bucket_name: str, object_name: str):
-        """Eliminar archivo del bucket."""
-        raise NotImplementedError("Implementar método de eliminación.")
+    async def delete_file(self, object_name: str) -> dict:
+        """
+        Eliminar archivo del bucket.
+        
+        Args:
+            object_name: Nombre del objeto a eliminar
+            
+        Returns:
+            dict: Resultado de la operación de eliminación
+        """
+        response = self.client.storage.from_(self.bucket_name).remove([object_name])
+        return response
 
-    async def list_files(self, bucket_name: str):
-        """Listar archivos disponibles en el bucket."""
-        raise NotImplementedError("Implementar método de listado.")
+    async def list_files(self) -> list:
+        """
+        Listar archivos disponibles en el bucket.
+        
+        Returns:
+            list: Lista de objetos en el bucket
+        """
+        response = self.client.storage.from_(self.bucket_name).list()
+        return response
