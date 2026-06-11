@@ -1,6 +1,10 @@
 #!/bin/bash
 set -e
 
+echo "=== ENTRYPOINT EJECUTADO ==="
+echo "DATABASE_URL=$DATABASE_URL"
+echo "ALEMBIC_DATABASE_URL=$ALEMBIC_DATABASE_URL"
+
 # Ejecutar migraciones
 echo "Ejecutando migraciones..."
 alembic upgrade head
