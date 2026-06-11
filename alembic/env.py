@@ -31,7 +31,12 @@ target_metadata = Base.metadata
 from app.usuarios.models.usuario import Usuario
 from app.recuerdos.models.recuerdo import Recuerdo
 
-print("Modelos detectados:", list(Base.metadata.tables.keys()))
+import logging
+from sqlalchemy.engine import make_url
+
+logger = logging.getLogger(__name__)
+logger.warning("DATABASE_URL: %s",  os.getenv("ALEMBIC_DATABASE_URL"))
+logger.info("Modelos detectados:", list(Base.metadata.tables.keys()))
 config.set_main_option("sqlalchemy.url", os.getenv("ALEMBIC_DATABASE_URL"))
 
 def run_migrations_offline() -> None:
