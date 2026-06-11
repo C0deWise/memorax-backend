@@ -2,9 +2,15 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from app.core.config import settings
 
+
+raise Exception(
+    f"DATABASE_URL={repr(settings.DATABASE_URL)} "
+    f"TYPE={type(settings.DATABASE_URL)}"
+)
+
 # Crear el motor asÃ­ncrono
 engine = create_async_engine(
-    settings.database_url,
+    settings.DATABASE_URL,
     echo=settings.debug,
     future=True
 )
