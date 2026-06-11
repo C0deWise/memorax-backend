@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     POSTGRES_PASSWORD: str = "password"
     POSTGRES_DB: str = "memorax_db"
     # Base de Datos
-    database_url: str = "postgresql+asyncpg://user:password@localhost:5432/memorax_db"
+    DATABASE_URL: str = "postgresql+asyncpg://user:password@localhost:5432/memorax_db"
     ALEMBIC_DATABASE_URL: str = "postgresql+psycopg://user:password@localhost:5432/memorax_db"
     # JWT Secret
     secret_key: str = "my_secret_key_here"

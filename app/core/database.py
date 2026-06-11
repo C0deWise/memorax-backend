@@ -4,7 +4,7 @@ from app.core.config import settings
 
 # Crear el motor asÃ­ncrono
 engine = create_async_engine(
-    settings.database_url,
+    settings.DATABASE_URL,
     echo=settings.debug,
     future=True
 )

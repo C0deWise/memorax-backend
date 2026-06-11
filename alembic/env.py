@@ -35,7 +35,7 @@ import logging
 from sqlalchemy.engine import make_url
 
 logger = logging.getLogger(__name__)
-logger.warning("DATABASE_URL: %s",  os.getenv("ALEMBIC_DATABASE_URL"))
+logger.warning("ALEMBIC_DATABASE_URL: %s",  os.getenv("ALEMBIC_DATABASE_URL"))
 logger.info("Modelos detectados:", list(Base.metadata.tables.keys()))
 config.set_main_option("sqlalchemy.url", os.getenv("ALEMBIC_DATABASE_URL"))
 
