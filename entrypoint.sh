@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 # Esperar a que la base de datos esté lista
 echo "Esperando a que la base de datos esté lista..."
