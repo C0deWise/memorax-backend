@@ -1,1 +1,1 @@
-# app/tests/__init__.py
+# Tests del proyecto
