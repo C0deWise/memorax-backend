@@ -3,11 +3,6 @@ from sqlalchemy.orm import sessionmaker
 from app.core.config import settings
 
 
-raise Exception(
-    f"DATABASE_URL={repr(settings.DATABASE_URL)} "
-    f"TYPE={type(settings.DATABASE_URL)}"
-)
-
 # Crear el motor asÃ­ncrono
 engine = create_async_engine(
     settings.DATABASE_URL,
